@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Heran Zhao"]
 readme = "README.md"
-packages = [{include = "beginner-data-project"}]
+packages = [{include = "beginner_data_project"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
