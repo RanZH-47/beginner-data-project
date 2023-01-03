@@ -24,13 +24,13 @@ resource "aws_iam_instance_profile" "sde_ec2_iam_instance_profile" {
   role = aws_iam_role.sde_ec2_iam_role.name
 }
 
-resource "aws_s3_bucket" "sde_data_lake" {
+resource "aws_s3_bucket" "sde-data-lake" {
   bucket_prefix = var.bucket_prefix
   force_destroy = true
 }
 
 resource "aws_s3_bucket_acl" "sde_data_lake_acl" {
-  bucket = aws_s3_bucket.sde_data_lake.id
+  bucket = aws_s3_bucket.sde-data-lake.id
   acl    = "public-read-write"
 }
 
@@ -71,25 +71,25 @@ provider "redshift" {
 
 resource "redshift_schema" "external_from_glue_data_catalog" {
   name  = "spectrum"
-  onwer = var.redshift_user
+  owner = var.redshift_user
   external_schema {
     database_name = "spectrum"
     data_catalog_source {
-      region                                 = var.region
+      region                                 = var.aws_region
       iam_role_arns                          = [aws_iam_role.sde_redshift_iam_role.arn]
       create_external_database_if_not_exists = true
     }
   }
 }
 
-resource "tls_secure_key" "custom_key" {
+resource "tls_private_key" "custom_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "aws_key_pair" "generated_key" {
   key_name_prefix = var.key_name
-  public_key      = tls_secure_key.custom_key.public_key_openssh
+  public_key      = tls_private_key.custom_key.public_key_openssh
 }
 
 data "aws_ami" "ubuntu" {
@@ -147,7 +147,7 @@ resource "aws_emr_cluster" "sde_emr_cluster" {
   }
 
   ec2_attributes {
-    instance_profile = aws_iam_instance_profile.sde_ec2_iam_role_instance_profile.id
+    instance_profile = aws_iam_instance_profile.sde_ec2_iam_instance_profile.id
   }
 
   master_instance_group {

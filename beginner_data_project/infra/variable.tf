@@ -41,3 +41,9 @@ variable "auto_termination_timeoff" {
   type        = number
   default     = 14400 # 4 hours
 }
+
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+  default     = "ap-southeast-1"
+}
