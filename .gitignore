@@ -7,3 +7,5 @@ coverage.xml
 .DS_Store
 
 .terraform
+
+*.log
