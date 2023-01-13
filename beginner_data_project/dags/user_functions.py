@@ -19,7 +19,7 @@ with DAG(
         sql="../scripts/sql/extract_user_purchase_data.sql",
         params={"user_purchase": "/temp/user_purchase.csv"},
         depends_on_past=True,
-        wait_for_downstream=True
+        wait_for_downstream=True,
     )
 
     move_user_purchase_data_to_stage_data_lake = PythonOperator(
