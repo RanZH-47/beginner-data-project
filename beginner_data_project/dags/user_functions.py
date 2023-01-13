@@ -14,15 +14,15 @@ with DAG(
     catchup=False,
 ) as dag:
     extract_user_purchase_data = PostgresOperator(
-        dag=dag,
         task_id="extract_user_purchase_data",
         postgres_conn_id="postgres_default",
         sql="../scripts/sql/extract_user_purchase_data.sql",
-        params={},
+        params={"user_purchase": "/temp/user_purchase.csv"},
+        depends_on_past=True,
+        wait_for_downstream=True
     )
 
     move_user_purchase_data_to_stage_data_lake = PythonOperator(
-        dag=dag,
         task_id="move_user_purchase_data_to_stage_data_lake",
         python_callable=local_to_s3,
         op_kwargs={},
@@ -30,7 +30,6 @@ with DAG(
 
     # make redshift aware of partition with redshift spectrum
     move_user_purchase_data_to_stage_data_lake_tbl = PythonOperator(
-        dag=dag,
         task_id="move_user_purchase_data_to_stage_data_lake_tbl",
         python_callable=redshift_external_query,
         op_kwargs={},
