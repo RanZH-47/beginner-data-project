@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
+from beginner_data_project.dags.runtime_variables import bucket_name
 
 from beginner_data_project.scripts.aws.user_scripts import (
     local_to_s3,
@@ -16,7 +17,7 @@ with DAG(
     extract_user_purchase_data = PostgresOperator(
         task_id="extract_user_purchase_data",
         postgres_conn_id="postgres_default",
-        sql="../scripts/sql/extract_user_purchase_data.sql",
+        sql="./scripts/sql/extract_user_purchase_data.sql",
         params={"user_purchase": "/temp/user_purchase.csv"},
         depends_on_past=True,
         wait_for_downstream=True,
@@ -25,7 +26,12 @@ with DAG(
     move_user_purchase_data_to_stage_data_lake = PythonOperator(
         task_id="move_user_purchase_data_to_stage_data_lake",
         python_callable=local_to_s3,
-        op_kwargs={},
+        op_kwargs={
+            "file_name": "/opt/airflow/temp/user_purchase.csv",
+            "bucket_name": bucket_name,
+            "key": "stage/user_purchase/{{ ds }}/user_purchase.csv",
+            "clear_local": "true",
+        },
     )
 
     # make redshift aware of partition with redshift spectrum
