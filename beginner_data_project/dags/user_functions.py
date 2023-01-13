@@ -2,7 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
-from beginner_data_project.scripts.user_scripts import (
+from beginner_data_project.scripts.aws.user_scripts import (
     local_to_s3,
     redshift_external_query,
 )
