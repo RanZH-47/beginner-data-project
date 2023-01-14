@@ -34,7 +34,7 @@ with DAG(
         },
     )
 
-    # make redshift aware of partition with redshift spectrum
+    # make redshift aware of new partition with redshift spectrum
     move_user_purchase_data_to_stage_data_lake_tbl = PythonOperator(
         task_id="move_user_purchase_data_to_stage_data_lake_tbl",
         python_callable=redshift_external_query,
@@ -52,3 +52,4 @@ with DAG(
         >> move_user_purchase_data_to_stage_data_lake
         >> move_user_purchase_data_to_stage_data_lake_tbl
     )
+
