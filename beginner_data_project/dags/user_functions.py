@@ -53,3 +53,22 @@ with DAG(
         >> move_user_purchase_data_to_stage_data_lake_tbl
     )
 
+    movie_review_to_data_lake_stage = PythonOperator(
+        task_id="movie_review_to_raw_data_lake",
+        python_callable=local_to_s3,
+        op_kwargs={
+            "file_name": "/data/movie_review.csv",
+            "bucket_name": bucket_name,
+            "key": "stage/movie_review/{{ ds }}/movie.csv",
+        }
+    )
+
+    spark_script_to_data_lake_stage = PythonOperator(
+        task_id="movie_review_to_raw_data_lake",
+        python_callable=local_to_s3,
+        op_kwargs={
+            "file_name": "./scripts/spark/random_classification.py",
+            "bucket_name": bucket_name,
+            "key": "scripts/random_classification.py",
+        }
+    )
