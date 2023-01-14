@@ -38,7 +38,13 @@ with DAG(
     move_user_purchase_data_to_stage_data_lake_tbl = PythonOperator(
         task_id="move_user_purchase_data_to_stage_data_lake_tbl",
         python_callable=redshift_external_query,
-        op_kwargs={},
+        op_kwargs={
+            "query": "ALTER TABLE spectrum.user_purchase_staging \
+            ADD IF NOT EXISTS PARTITION(insert_date = '{{ ds }}')\
+                LOCATION s3://"
+            + bucket_name
+            + "/stage/user_purchase/{{ ds }}"
+        },
     )
 
     (
