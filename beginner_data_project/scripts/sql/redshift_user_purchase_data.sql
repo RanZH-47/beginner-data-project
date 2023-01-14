@@ -7,7 +7,7 @@ FROM
 
 DROP EXTERNAL TABLE IF EXISTS spectrum_schema.user_purchase;
 
-CREATE EXTERNAL TABLE spectrum_schema.user_purchase (
+CREATE EXTERNAL TABLE spectrum_schema.user_purchase_staging (
     invoice_number varchar(10),
     stock_code varchar(20),
     detail varchar(1000),
